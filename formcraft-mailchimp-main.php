@@ -6,15 +6,11 @@
 	Description: MailChimp Add-On for FormCraft
 	Author: nCrafts
 	Author URI: http://formcraft-wp.com/
-	Version: 1.0.9
+	Version: 1.0.11
 	Text Domain: formcraft-mailchimp
 	*/
 
 	global $fc_meta, $fc_forms_table, $fc_submissions_table, $fc_views_table, $fc_files_table, $wpdb;
-	$fc_forms_table = $wpdb->prefix . "formcraft_3_forms";
-	$fc_submissions_table = $wpdb->prefix . "formcraft_3_submissions";
-	$fc_views_table = $wpdb->prefix . "formcraft_3_views";
-	$fc_files_table = $wpdb->prefix . "formcraft_3_files";
 
 	add_action('formcraft_after_save', 'formcraft_mailchimp_trigger', 10, 4);
 	function formcraft_mailchimp_trigger($content, $meta, $raw_content, $integrations)
@@ -50,7 +46,7 @@
 		foreach ($submit_data as $key => $list_submit) {
 			if (!isset($list_submit['email']))
 				{$fc_final_response['debug']['failed'][] = __('MailChimp: No Email Specified','formcraft-mailchimp');continue;}
-			$mailchimp = new \Drewm\MailChimp($mailchimp_data['validKey']);
+			$mailchimp = new MailChimp($mailchimp_data['validKey']);
 			$result = $mailchimp->call('lists/subscribe', $list_submit);
 			if ( isset($result['error']) )
 			{
@@ -81,7 +77,7 @@
 	{
 		$key = $_GET['key'];
 		require_once('MailChimp.php');
-		$mailchimp = new \Drewm\MailChimp($key);
+		$mailchimp = new MailChimp($key);
 		$ping = $mailchimp->call('helper/ping');
 		if ($ping)
 		{
@@ -99,7 +95,7 @@
 	{
 		$key = $_GET['key'];
 		require_once('MailChimp.php');
-		$mailchimp = new \Drewm\MailChimp($key);
+		$mailchimp = new MailChimp($key);
 		$lists = $mailchimp->call('lists/list');
 		if ($lists)
 		{
@@ -118,7 +114,7 @@
 		$key = $_GET['key'];
 		$id = $_GET['id'];
 		require_once('MailChimp.php');
-		$mailchimp = new \Drewm\MailChimp($key);
+		$mailchimp = new MailChimp($key);
 		$columns = $mailchimp->call('lists/merge-vars', array('apiKey'=>$key,'id'=>array($id)));
 		if ($columns)
 		{
